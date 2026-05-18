@@ -38,7 +38,7 @@ MongoDB (port 27017)
 
 ```bash
 # 1. Cloner le projet
-git clone <url-du-repo>
+git clone https://github.com/soniamhimdi/tp3-docker-bibliotheque
 cd tp3-docker-bibliotheque
 
 # 2. Lancer tous les services
