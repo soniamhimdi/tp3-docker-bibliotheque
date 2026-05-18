@@ -1,0 +1,55 @@
+services:
+
+  database:
+    image: mongo:7
+    container_name: bibliotheque_db
+    restart: unless-stopped
+    volumes:
+      - database_data:/data/db
+    networks:
+      - bibliotheque_network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: bibliotheque_api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    environment:
+      PORT: 5000
+      MONGO_URL: mongodb://database:27017/bibliotheque
+      NODE_ENV: development
+    depends_on:
+      - database
+    networks:
+      - bibliotheque_network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: bibliotheque_client
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+    depends_on:
+      - api
+    networks:
+      - bibliotheque_network
+
+volumes:
+  database_data:
+
+networks:
+  bibliotheque_network:
+    driver: bridge
